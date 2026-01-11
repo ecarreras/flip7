@@ -410,12 +410,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // Support both root and subdirectory deployment (GitHub Pages)
-        const swPath = document.querySelector('base') 
-            ? new URL('service-worker.js', document.baseURI).pathname
-            : './service-worker.js';
-        
-        navigator.serviceWorker.register(swPath)
+        navigator.serviceWorker.register('./service-worker.js')
             .then(registration => {
                 console.log('Service Worker registered:', registration);
             })
