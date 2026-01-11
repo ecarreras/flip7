@@ -83,6 +83,69 @@ class GameState {
     }
 }
 
+// Score Wizard
+class ScoreWizard {
+    constructor(players) {
+        this.players = [...players];
+        this.currentIndex = 0;
+        this.scores = new Array(players.length).fill(0);
+        this.calculator = new Calculator();
+    }
+
+    getCurrentPlayer() {
+        return this.players[this.currentIndex];
+    }
+
+    getCurrentScore() {
+        return this.scores[this.currentIndex];
+    }
+
+    setCurrentScore(score) {
+        this.scores[this.currentIndex] = score;
+    }
+
+    next() {
+        if (this.currentIndex < this.players.length - 1) {
+            this.currentIndex++;
+            return true;
+        }
+        return false;
+    }
+
+    previous() {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            return true;
+        }
+        return false;
+    }
+
+    hasNext() {
+        return this.currentIndex < this.players.length - 1;
+    }
+
+    hasPrevious() {
+        return this.currentIndex > 0;
+    }
+
+    getProgress() {
+        return `${this.currentIndex + 1} de ${this.players.length}`;
+    }
+
+    reset() {
+        this.currentIndex = 0;
+        this.scores = new Array(this.players.length).fill(0);
+        this.calculator.clear();
+    }
+
+    getScores() {
+        return this.players.map((player, index) => ({
+            playerId: player.id,
+            points: this.scores[index]
+        }));
+    }
+}
+
 // Calculator
 class Calculator {
     constructor() {
@@ -185,6 +248,21 @@ class UIManager {
         this.calcDisplay = document.getElementById('calcDisplay');
         this.calcButtons = document.querySelectorAll('.calc-btn');
         this.useCalcResultBtn = document.getElementById('useCalcResult');
+
+        // Wizard elements
+        this.wizardContainer = document.getElementById('wizardContainer');
+        this.wizardContent = document.getElementById('wizardContent');
+        this.wizardProgress = document.getElementById('wizardProgress');
+        this.wizardPlayerName = document.getElementById('wizardPlayerName');
+        this.wizardPlayerScore = document.getElementById('wizardPlayerScore');
+        this.wizardCalcDisplay = document.getElementById('wizardCalcDisplay');
+        this.wizardCalcButtons = document.querySelectorAll('#wizard-tab .calc-btn');
+        this.wizardPrevBtn = document.getElementById('wizardPrevBtn');
+        this.wizardNextBtn = document.getElementById('wizardNextBtn');
+        this.wizardAddScoreBtn = document.getElementById('wizardAddScoreBtn');
+        this.wizardFinishBtn = document.getElementById('wizardFinishBtn');
+        
+        this.scoreWizard = null;
     }
 
     attachEventListeners() {
@@ -209,6 +287,15 @@ class UIManager {
             btn.addEventListener('click', () => this.handleCalcButton(btn));
         });
         this.useCalcResultBtn.addEventListener('click', () => this.useCalcResult());
+
+        // Wizard
+        this.wizardCalcButtons.forEach(btn => {
+            btn.addEventListener('click', () => this.handleWizardCalcButton(btn));
+        });
+        this.wizardPrevBtn.addEventListener('click', () => this.wizardPrevious());
+        this.wizardNextBtn.addEventListener('click', () => this.wizardNext());
+        this.wizardAddScoreBtn.addEventListener('click', () => this.wizardAddScore());
+        this.wizardFinishBtn.addEventListener('click', () => this.wizardFinish());
     }
 
     switchTab(tabName) {
@@ -226,6 +313,8 @@ class UIManager {
         if (tabName === 'scoreboard') {
             this.updateScoreboard();
             this.updateRoundHistory();
+        } else if (tabName === 'wizard') {
+            this.initWizard();
         }
     }
 
@@ -389,6 +478,130 @@ class UIManager {
     showNotification(message, type) {
         // Simple notification system - could be enhanced with a toast component
         console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+
+    // Wizard methods
+    initWizard() {
+        const players = this.gameState.players;
+        
+        if (players.length === 0) {
+            this.wizardContainer.style.display = 'block';
+            this.wizardContent.style.display = 'none';
+            return;
+        }
+
+        this.wizardContainer.style.display = 'none';
+        this.wizardContent.style.display = 'flex';
+        
+        // Initialize or reset wizard
+        if (!this.scoreWizard || this.scoreWizard.players.length !== players.length) {
+            this.scoreWizard = new ScoreWizard(players);
+        } else {
+            this.scoreWizard.calculator.clear();
+        }
+        
+        this.updateWizardUI();
+    }
+
+    updateWizardUI() {
+        if (!this.scoreWizard) return;
+
+        const currentPlayer = this.scoreWizard.getCurrentPlayer();
+        const currentScore = this.scoreWizard.getCurrentScore();
+        
+        // Update player info
+        this.wizardProgress.textContent = this.scoreWizard.getProgress();
+        this.wizardPlayerName.textContent = currentPlayer.name;
+        this.wizardPlayerScore.textContent = currentPlayer.score;
+        
+        // Update calculator display
+        this.wizardCalcDisplay.value = currentScore === 0 ? this.scoreWizard.calculator.getResult() : currentScore.toString();
+        
+        // Update button states
+        this.wizardPrevBtn.disabled = !this.scoreWizard.hasPrevious();
+        this.wizardNextBtn.disabled = !this.scoreWizard.hasNext();
+    }
+
+    handleWizardCalcButton(btn) {
+        if (!this.scoreWizard) return;
+
+        if (btn.classList.contains('calc-number')) {
+            this.scoreWizard.calculator.appendNumber(btn.dataset.value);
+        } else if (btn.classList.contains('calc-operator')) {
+            this.scoreWizard.calculator.setOperator(btn.dataset.value);
+        } else if (btn.classList.contains('calc-equals')) {
+            this.scoreWizard.calculator.calculate();
+        } else if (btn.classList.contains('calc-clear')) {
+            this.scoreWizard.calculator.clear();
+            this.scoreWizard.setCurrentScore(0);
+        }
+
+        this.wizardCalcDisplay.value = this.scoreWizard.calculator.getResult();
+    }
+
+    wizardAddScore() {
+        if (!this.scoreWizard) return;
+
+        const result = this.scoreWizard.calculator.getResult();
+        if (result !== 'Error') {
+            const score = Math.round(parseFloat(result));
+            this.scoreWizard.setCurrentScore(score);
+            this.showNotification(`Punts guardats per ${this.scoreWizard.getCurrentPlayer().name}`, 'success');
+        }
+    }
+
+    wizardNext() {
+        if (!this.scoreWizard) return;
+
+        // Save current score if calculator has a value
+        const result = this.scoreWizard.calculator.getResult();
+        if (result !== 'Error' && result !== '0') {
+            const score = Math.round(parseFloat(result));
+            this.scoreWizard.setCurrentScore(score);
+        }
+
+        if (this.scoreWizard.next()) {
+            this.scoreWizard.calculator.clear();
+            this.updateWizardUI();
+        }
+    }
+
+    wizardPrevious() {
+        if (!this.scoreWizard) return;
+
+        if (this.scoreWizard.previous()) {
+            this.scoreWizard.calculator.clear();
+            this.updateWizardUI();
+        }
+    }
+
+    wizardFinish() {
+        if (!this.scoreWizard) return;
+
+        // Save current score before finishing
+        const result = this.scoreWizard.calculator.getResult();
+        if (result !== 'Error' && result !== '0') {
+            const score = Math.round(parseFloat(result));
+            this.scoreWizard.setCurrentScore(score);
+        }
+
+        // Apply all scores
+        const scores = this.scoreWizard.getScores();
+        let appliedCount = 0;
+        
+        scores.forEach(({ playerId, points }) => {
+            if (points !== 0) {
+                this.gameState.addScore(playerId, points);
+                appliedCount++;
+            }
+        });
+
+        // Reset wizard and update UI
+        this.scoreWizard.reset();
+        this.updateUI();
+        this.updateWizardUI();
+        
+        this.showNotification(`Ronda completada! ${appliedCount} puntuacions afegides`, 'success');
     }
 
     escapeHtml(text) {

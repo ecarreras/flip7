@@ -20,6 +20,7 @@
 
         <nav class="tab-nav">
             <button class="tab-btn active" data-tab="game">Partida</button>
+            <button class="tab-btn" data-tab="wizard">Assistent</button>
             <button class="tab-btn" data-tab="scoreboard">Taula</button>
             <button class="tab-btn" data-tab="calculator">Calculadora</button>
         </nav>
@@ -50,6 +51,66 @@
                     </select>
                     <input type="number" id="scoreInput" placeholder="Punts" step="1">
                     <button id="addScoreBtn" class="btn btn-primary">Afegir Punts</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Wizard Tab -->
+        <div class="tab-content" id="wizard-tab">
+            <section class="card">
+                <h2>Assistent de Puntuació</h2>
+                <div id="wizardContainer" class="wizard-container">
+                    <p class="empty-message">No hi ha jugadors. Afegeix jugadors a la pestanya "Partida" per començar!</p>
+                </div>
+                <div id="wizardContent" class="wizard-content" style="display: none;">
+                    <!-- Player Info -->
+                    <div class="wizard-player-info">
+                        <div class="wizard-progress">
+                            <span id="wizardProgress">1 de 3</span>
+                        </div>
+                        <div class="wizard-player-name" id="wizardPlayerName">Jugador</div>
+                        <div class="wizard-player-score">
+                            Puntuació actual: <span id="wizardPlayerScore">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Calculator -->
+                    <div class="wizard-calculator">
+                        <div class="calc-display">
+                            <input type="text" id="wizardCalcDisplay" readonly value="0">
+                        </div>
+                        <div class="calc-buttons">
+                            <button class="calc-btn calc-number" data-value="7">7</button>
+                            <button class="calc-btn calc-number" data-value="8">8</button>
+                            <button class="calc-btn calc-number" data-value="9">9</button>
+                            <button class="calc-btn calc-operator" data-value="+">+</button>
+                            
+                            <button class="calc-btn calc-number" data-value="4">4</button>
+                            <button class="calc-btn calc-number" data-value="5">5</button>
+                            <button class="calc-btn calc-number" data-value="6">6</button>
+                            <button class="calc-btn calc-operator" data-value="-">-</button>
+                            
+                            <button class="calc-btn calc-number" data-value="1">1</button>
+                            <button class="calc-btn calc-number" data-value="2">2</button>
+                            <button class="calc-btn calc-number" data-value="3">3</button>
+                            <button class="calc-btn calc-operator" data-value="*">×</button>
+                            
+                            <button class="calc-btn calc-number" data-value="0">0</button>
+                            <button class="calc-btn calc-clear">C</button>
+                            <button class="calc-btn calc-equals">=</button>
+                            <button class="calc-btn calc-operator" data-value="/">÷</button>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Actions -->
+                    <div class="wizard-actions">
+                        <button id="wizardPrevBtn" class="btn btn-secondary">← Anterior</button>
+                        <button id="wizardAddScoreBtn" class="btn btn-primary">Afegir Punts</button>
+                        <button id="wizardNextBtn" class="btn btn-primary">Següent →</button>
+                    </div>
+                    <div class="wizard-actions">
+                        <button id="wizardFinishBtn" class="btn btn-success">✓ Finalitzar Ronda</button>
+                    </div>
                 </div>
             </section>
         </div>
