@@ -2,7 +2,7 @@
   "name": "Flip 7",
   "short_name": "Flip 7",
   "description": "Aplicació per portar les puntuacions del joc de cartes Flip 7",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",

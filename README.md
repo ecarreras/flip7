@@ -19,14 +19,22 @@ Aplicació web progressiva (PWA) per portar les puntuacions del joc de cartes **
 
 ## 🚀 Ús
 
-### Opció 1: Ús directe (recomanat)
+### Opció 1: GitHub Pages (en línia)
+
+L'aplicació es desplega automàticament a GitHub Pages:
+
+**https://ecarreras.github.io/flip7/**
+
+Pots accedir-hi directament des de qualsevol dispositiu i instal·lar-la com a PWA.
+
+### Opció 2: Ús directe local
 
 1. Obre `index.html` en un navegador web modern
 2. Per instal·lar com a PWA, utilitza l'opció "Afegir a la pantalla d'inici" o "Instal·la l'aplicació" del navegador
 
-### Opció 2: Servidor local
+### Opció 3: Servidor local
 
-Si vols provar la funcionalitat PWA completa amb service worker:
+Si vols provar la funcionalitat PWA completa amb service worker en local:
 
 ```bash
 # Amb Python 3
@@ -106,6 +114,19 @@ Les dades es mantenen entre sessions fins que:
 - ✅ Safari 13+
 - ✅ Opera 67+
 - ✅ Navegadors mòbils moderns
+
+## 🚀 Desplegament
+
+L'aplicació es desplega automàticament a GitHub Pages mitjançant GitHub Actions cada vegada que es fa push a la branca `main`.
+
+### Configuració de GitHub Pages
+
+1. Ves a Settings > Pages al repositori
+2. A "Build and deployment", selecciona:
+   - **Source**: GitHub Actions
+3. El workflow `.github/workflows/deploy.yml` s'encarregarà del desplegament automàtic
+
+L'aplicació estarà disponible a: **https://ecarreras.github.io/flip7/**
 
 ## 📄 Llicència
 
