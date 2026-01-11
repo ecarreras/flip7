@@ -153,6 +153,7 @@ class Calculator {
         this.previous = '';
         this.operator = '';
         this.shouldResetDisplay = false;
+        this.ERROR_VALUE = 'Error';
     }
 
     clear() {
@@ -202,7 +203,7 @@ class Calculator {
                 this.current = (prev * curr).toString();
                 break;
             case '/':
-                this.current = curr !== 0 ? (prev / curr).toString() : 'Error';
+                this.current = curr !== 0 ? (prev / curr).toString() : this.ERROR_VALUE;
                 break;
         }
 
@@ -468,7 +469,7 @@ class UIManager {
 
     useCalcResult() {
         const result = this.calculator.getResult();
-        if (result !== 'Error' && result !== '0') {
+        if (result !== this.calculator.ERROR_VALUE && result !== '0') {
             this.scoreInput.value = Math.round(parseFloat(result));
             this.switchTab('game');
             this.showNotification('Resultat copiat al camp de punts', 'success');
@@ -543,7 +544,7 @@ class UIManager {
         if (!this.scoreWizard) return;
 
         const result = this.scoreWizard.calculator.getResult();
-        if (result !== 'Error') {
+        if (result !== this.scoreWizard.calculator.ERROR_VALUE) {
             const score = Math.round(parseFloat(result));
             this.scoreWizard.setCurrentScore(score);
             this.showNotification(`Punts guardats per ${this.scoreWizard.getCurrentPlayer().name}`, 'success');
@@ -555,7 +556,7 @@ class UIManager {
 
         // Save current score if calculator has a value
         const result = this.scoreWizard.calculator.getResult();
-        if (result !== 'Error' && result !== '0') {
+        if (result !== this.scoreWizard.calculator.ERROR_VALUE && result !== '0') {
             const score = Math.round(parseFloat(result));
             this.scoreWizard.setCurrentScore(score);
         }
@@ -580,12 +581,12 @@ class UIManager {
 
         // Save current score before finishing
         const result = this.scoreWizard.calculator.getResult();
-        if (result !== 'Error' && result !== '0') {
+        if (result !== this.scoreWizard.calculator.ERROR_VALUE && result !== '0') {
             const score = Math.round(parseFloat(result));
             this.scoreWizard.setCurrentScore(score);
         }
 
-        // Apply all scores
+        // Apply all scores (skip zero scores)
         const scores = this.scoreWizard.getScores();
         let appliedCount = 0;
         
