@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aplicació per portar les puntuacions del joc de cartes Flip 7">
+    <meta name="theme-color" content="#1976d2">
+    <title>Flip 7 - Puntuacions</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>🎴 Flip 7</h1>
+            <p class="subtitle">Puntuacions del joc</p>
+        </header>
+
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="game">Partida</button>
+            <button class="tab-btn" data-tab="scoreboard">Taula</button>
+            <button class="tab-btn" data-tab="calculator">Calculadora</button>
+        </nav>
+
+        <!-- Game Tab -->
+        <div class="tab-content active" id="game-tab">
+            <section class="card">
+                <h2>Gestió de Jugadors</h2>
+                <div class="player-input-group">
+                    <input type="text" id="playerName" placeholder="Nom del jugador" autocomplete="off">
+                    <button id="addPlayerBtn" class="btn btn-primary">Afegir Jugador</button>
+                </div>
+                <button id="newGameBtn" class="btn btn-secondary">Nova Partida</button>
+            </section>
+
+            <section class="card">
+                <h2>Jugadors de la Partida</h2>
+                <div id="playersList" class="players-list">
+                    <p class="empty-message">No hi ha jugadors. Afegeix-ne un per començar!</p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Afegir Puntuació</h2>
+                <div id="scoreForm" class="score-form">
+                    <select id="playerSelect" class="player-select">
+                        <option value="">Selecciona un jugador</option>
+                    </select>
+                    <input type="number" id="scoreInput" placeholder="Punts" step="1">
+                    <button id="addScoreBtn" class="btn btn-primary">Afegir Punts</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Scoreboard Tab -->
+        <div class="tab-content" id="scoreboard-tab">
+            <section class="card">
+                <h2>Taula de Puntuació</h2>
+                <div id="scoreboard" class="scoreboard">
+                    <p class="empty-message">No hi ha puntuacions encara.</p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Historial de Rondes</h2>
+                <div id="roundHistory" class="round-history">
+                    <p class="empty-message">No hi ha historial de rondes.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Calculator Tab -->
+        <div class="tab-content" id="calculator-tab">
+            <section class="card">
+                <h2>Calculadora de Punts</h2>
+                <div class="calculator">
+                    <div class="calc-display">
+                        <input type="text" id="calcDisplay" readonly value="0">
+                    </div>
+                    <div class="calc-buttons">
+                        <button class="calc-btn calc-number" data-value="7">7</button>
+                        <button class="calc-btn calc-number" data-value="8">8</button>
+                        <button class="calc-btn calc-number" data-value="9">9</button>
+                        <button class="calc-btn calc-operator" data-value="+">+</button>
+                        
+                        <button class="calc-btn calc-number" data-value="4">4</button>
+                        <button class="calc-btn calc-number" data-value="5">5</button>
+                        <button class="calc-btn calc-number" data-value="6">6</button>
+                        <button class="calc-btn calc-operator" data-value="-">-</button>
+                        
+                        <button class="calc-btn calc-number" data-value="1">1</button>
+                        <button class="calc-btn calc-number" data-value="2">2</button>
+                        <button class="calc-btn calc-number" data-value="3">3</button>
+                        <button class="calc-btn calc-operator" data-value="*">×</button>
+                        
+                        <button class="calc-btn calc-number" data-value="0">0</button>
+                        <button class="calc-btn calc-clear">C</button>
+                        <button class="calc-btn calc-equals">=</button>
+                        <button class="calc-btn calc-operator" data-value="/">÷</button>
+                    </div>
+                    <div class="calc-actions">
+                        <button id="useCalcResult" class="btn btn-primary">Usar Resultat</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>© 2026 Flip 7 - Puntuacions</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

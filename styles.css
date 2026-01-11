@@ -1,0 +1,492 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #1976d2;
+    --primary-dark: #1565c0;
+    --secondary-color: #424242;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --background: #f5f5f5;
+    --card-bg: #ffffff;
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --border-color: #e0e0e0;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-lg: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem 2rem;
+}
+
+header {
+    text-align: center;
+    padding: 2rem 0 1rem;
+    background: var(--primary-color);
+    color: white;
+    margin: 0 -1rem 1rem;
+    box-shadow: var(--shadow);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* Tabs Navigation */
+.tab-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-secondary);
+}
+
+.tab-btn:hover {
+    background: var(--background);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+    margin-top: 1rem;
+}
+
+.btn-secondary:hover {
+    background: #616161;
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-danger:hover {
+    background: #d32f2f;
+}
+
+/* Input Groups */
+.player-input-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    min-width: 200px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Players List */
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--background);
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.player-info {
+    flex: 1;
+}
+
+.player-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.player-score {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.player-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Score Form */
+.score-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.player-select {
+    flex: 2;
+    min-width: 150px;
+}
+
+#scoreInput {
+    flex: 1;
+    min-width: 100px;
+}
+
+/* Scoreboard */
+.scoreboard {
+    overflow-x: auto;
+}
+
+.scoreboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scoreboard-table th,
+.scoreboard-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.scoreboard-table th {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.scoreboard-table tr:hover {
+    background: var(--background);
+}
+
+.rank {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.rank-1 {
+    color: #ffd700;
+}
+
+.rank-2 {
+    color: #c0c0c0;
+}
+
+.rank-3 {
+    color: #cd7f32;
+}
+
+/* Round History */
+.round-history {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.round-item {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: var(--background);
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.round-info {
+    flex: 1;
+}
+
+.round-player {
+    font-weight: 600;
+}
+
+.round-points {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.round-points.negative {
+    color: var(--danger-color);
+}
+
+/* Calculator */
+.calculator {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.calc-display {
+    margin-bottom: 1rem;
+}
+
+.calc-display input {
+    width: 100%;
+    padding: 1.5rem;
+    font-size: 2rem;
+    text-align: right;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--background);
+}
+
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.calc-btn {
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--background);
+    color: var(--text-primary);
+}
+
+.calc-btn:hover {
+    background: var(--border-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.calc-btn:active {
+    transform: translateY(0);
+}
+
+.calc-operator {
+    background: var(--primary-color);
+    color: white;
+}
+
+.calc-operator:hover {
+    background: var(--primary-dark);
+}
+
+.calc-equals {
+    background: var(--success-color);
+    color: white;
+}
+
+.calc-equals:hover {
+    background: #43a047;
+}
+
+.calc-clear {
+    background: var(--danger-color);
+    color: white;
+}
+
+.calc-clear:hover {
+    background: #d32f2f;
+}
+
+.calc-actions {
+    display: flex;
+    justify-content: center;
+}
+
+#useCalcResult {
+    width: 100%;
+}
+
+/* Empty Messages */
+.empty-message {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 2rem;
+    font-style: italic;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .player-input-group,
+    .score-form {
+        flex-direction: column;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+        min-width: 100%;
+    }
+
+    .tab-btn {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    .calc-btn {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .player-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .player-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.player-item,
+.round-item {
+    animation: slideIn 0.3s ease;
+}
+
+/* Install Prompt */
+.install-prompt {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+}
+
+.install-prompt.show {
+    display: flex;
+}
+
+.install-prompt button {
+    white-space: nowrap;
+}
