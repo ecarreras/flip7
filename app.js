@@ -237,9 +237,6 @@ class UIManager {
         this.addPlayerBtn = document.getElementById('addPlayerBtn');
         this.newGameBtn = document.getElementById('newGameBtn');
         this.playersList = document.getElementById('playersList');
-        this.playerSelect = document.getElementById('playerSelect');
-        this.scoreInput = document.getElementById('scoreInput');
-        this.addScoreBtn = document.getElementById('addScoreBtn');
 
         // Scoreboard elements
         this.scoreboard = document.getElementById('scoreboard');
@@ -278,10 +275,6 @@ class UIManager {
             if (e.key === 'Enter') this.addPlayer();
         });
         this.newGameBtn.addEventListener('click', () => this.newGame());
-        this.addScoreBtn.addEventListener('click', () => this.addScore());
-        this.scoreInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.addScore();
-        });
 
         // Calculator
         this.calcButtons.forEach(btn => {
@@ -339,23 +332,6 @@ class UIManager {
         }
     }
 
-    addScore() {
-        const playerId = parseInt(this.playerSelect.value);
-        const points = parseInt(this.scoreInput.value);
-
-        if (!playerId || isNaN(points)) {
-            this.showNotification('Selecciona un jugador i introdueix punts vàlids', 'error');
-            return;
-        }
-
-        if (this.gameState.addScore(playerId, points)) {
-            this.scoreInput.value = '';
-            this.updateUI();
-            this.showNotification('Punts afegits!', 'success');
-            this.triggerConfetti();
-        }
-    }
-
     newGame() {
         if (confirm('Segur que vols començar una nova partida? Es perdran totes les dades actuals.')) {
             this.gameState.newGame();
@@ -366,7 +342,6 @@ class UIManager {
 
     updateUI() {
         this.updatePlayersList();
-        this.updatePlayerSelect();
         this.updateScoreboard();
         this.updateRoundHistory();
     }
@@ -390,15 +365,6 @@ class UIManager {
                 </div>
             </div>
         `).join('');
-    }
-
-    updatePlayerSelect() {
-        const players = this.gameState.players;
-        
-        this.playerSelect.innerHTML = '<option value="">Selecciona un jugador</option>' +
-            players.map(player => `
-                <option value="${player.id}">${this.escapeHtml(player.name)}</option>
-            `).join('');
     }
 
     updateScoreboard() {
@@ -472,9 +438,9 @@ class UIManager {
     useCalcResult() {
         const result = this.calculator.getResult();
         if (result !== this.calculator.ERROR_VALUE && result !== '0') {
-            this.scoreInput.value = Math.round(parseFloat(result));
-            this.switchTab('game');
-            this.showNotification('Resultat copiat al camp de punts', 'success');
+            // Switch to wizard tab to use the result
+            this.switchTab('wizard');
+            this.showNotification('Resultat disponible! Utilitza l\'assistent per afegir punts', 'success');
         }
     }
 
