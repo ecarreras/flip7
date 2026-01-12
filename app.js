@@ -441,10 +441,14 @@ class UIManager {
             // Switch to wizard tab and transfer the calculator result
             this.switchTab('wizard');
             
-            // Transfer result to wizard calculator if wizard is initialized
+            // Initialize wizard if needed, then transfer result
             if (this.scoreWizard && this.scoreWizard.calculator) {
+                // Clear and set the new value
                 this.scoreWizard.calculator.clear();
-                this.scoreWizard.calculator.current = result;
+                // Set the result by manipulating through proper flow
+                if (result !== '0') {
+                    this.scoreWizard.calculator.appendNumber(result);
+                }
                 this.updateWizardUI();
             }
             
