@@ -438,9 +438,17 @@ class UIManager {
     useCalcResult() {
         const result = this.calculator.getResult();
         if (result !== this.calculator.ERROR_VALUE && result !== '0') {
-            // Switch to wizard tab to use the result
+            // Switch to wizard tab and transfer the calculator result
             this.switchTab('wizard');
-            this.showNotification('Resultat disponible! Utilitza l\'assistent per afegir punts', 'success');
+            
+            // Transfer result to wizard calculator if wizard is initialized
+            if (this.scoreWizard && this.scoreWizard.calculator) {
+                this.scoreWizard.calculator.clear();
+                this.scoreWizard.calculator.current = result;
+                this.updateWizardUI();
+            }
+            
+            this.showNotification('Resultat transferit a l\'assistent!', 'success');
         }
     }
 
