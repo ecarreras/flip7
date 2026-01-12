@@ -4,14 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aplicació per portar les puntuacions del joc de cartes Flip 7">
-    <meta name="theme-color" content="#1976d2">
+    <meta name="theme-color" content="#667eea">
     <title>Flip 7 - Puntuacions</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-text">Mode fosc</span>
+    </button>
+    
     <div class="app-container">
         <header>
             <h1>🎴 Flip 7</h1>
@@ -19,10 +27,18 @@
         </header>
 
         <nav class="tab-nav">
-            <button class="tab-btn active" data-tab="game">Partida</button>
-            <button class="tab-btn" data-tab="wizard">Assistent</button>
-            <button class="tab-btn" data-tab="scoreboard">Taula</button>
-            <button class="tab-btn" data-tab="calculator">Calculadora</button>
+            <button class="tab-btn active" data-tab="game">
+                <span>🎮 Partida</span>
+            </button>
+            <button class="tab-btn" data-tab="wizard">
+                <span>🪄 Assistent</span>
+            </button>
+            <button class="tab-btn" data-tab="scoreboard">
+                <span>🏆 Taula</span>
+            </button>
+            <button class="tab-btn" data-tab="calculator">
+                <span>🔢 Calculadora</span>
+            </button>
         </nav>
 
         <!-- Game Tab -->
@@ -31,9 +47,13 @@
                 <h2>Gestió de Jugadors</h2>
                 <div class="player-input-group">
                     <input type="text" id="playerName" placeholder="Nom del jugador" autocomplete="off">
-                    <button id="addPlayerBtn" class="btn btn-primary">Afegir Jugador</button>
+                    <button id="addPlayerBtn" class="btn btn-primary">
+                        ➕ Afegir Jugador
+                    </button>
                 </div>
-                <button id="newGameBtn" class="btn btn-secondary">Nova Partida</button>
+                <button id="newGameBtn" class="btn btn-secondary">
+                    🔄 Nova Partida
+                </button>
             </section>
 
             <section class="card">
@@ -50,7 +70,9 @@
                         <option value="">Selecciona un jugador</option>
                     </select>
                     <input type="number" id="scoreInput" placeholder="Punts" step="1">
-                    <button id="addScoreBtn" class="btn btn-primary">Afegir Punts</button>
+                    <button id="addScoreBtn" class="btn btn-primary">
+                        ✨ Afegir Punts
+                    </button>
                 </div>
             </section>
         </div>
@@ -104,12 +126,20 @@
 
                     <!-- Wizard Actions -->
                     <div class="wizard-actions">
-                        <button id="wizardPrevBtn" class="btn btn-secondary">← Anterior</button>
-                        <button id="wizardAddScoreBtn" class="btn btn-primary">Afegir Punts</button>
-                        <button id="wizardNextBtn" class="btn btn-primary">Següent →</button>
+                        <button id="wizardPrevBtn" class="btn btn-secondary">
+                            ⬅️ Anterior
+                        </button>
+                        <button id="wizardAddScoreBtn" class="btn btn-primary">
+                            💾 Afegir Punts
+                        </button>
+                        <button id="wizardNextBtn" class="btn btn-primary">
+                            ➡️ Següent
+                        </button>
                     </div>
                     <div class="wizard-actions">
-                        <button id="wizardFinishBtn" class="btn btn-success">✓ Finalitzar Ronda</button>
+                        <button id="wizardFinishBtn" class="btn btn-success">
+                            ✅ Finalitzar Ronda
+                        </button>
                     </div>
                 </div>
             </section>
@@ -162,7 +192,9 @@
                         <button class="calc-btn calc-operator" data-value="/">÷</button>
                     </div>
                     <div class="calc-actions">
-                        <button id="useCalcResult" class="btn btn-primary">Usar Resultat</button>
+                        <button id="useCalcResult" class="btn btn-primary">
+                            🎯 Usar Resultat
+                        </button>
                     </div>
                 </div>
             </section>
