@@ -1,4 +1,5 @@
-const CACHE_NAME = 'flip7-v1';
+const CACHE_VERSION = '2026-01-12-20-32';
+const CACHE_NAME = `flip7-v${CACHE_VERSION}`;
 const urlsToCache = [
   './',
   './index.html',
@@ -14,13 +15,15 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Opened cache');
+        console.log('Opened cache:', CACHE_NAME);
         return cache.addAll(urlsToCache);
       })
       .catch((error) => {
         console.log('Cache addAll failed:', error);
       })
   );
+  // Force the waiting service worker to become the active service worker
+  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
@@ -35,49 +38,91 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Take control of all pages immediately
+      return self.clients.claim();
     })
   );
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network first for HTML, cache first for assets
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Cache hit - return response
-        if (response) {
+  const { request } = event;
+  const url = new URL(request.url);
+  
+  // For HTML files, use network-first strategy to always check for updates
+  if (request.headers.get('accept')?.includes('text/html') || 
+      url.pathname.endsWith('.html') || 
+      url.pathname === '/' || 
+      url.pathname === './') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // Update cache with new version
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          }).catch((error) => {
+            console.error('Failed to cache response:', error);
+          });
           return response;
-        }
-
-        // Clone the request
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then((response) => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        })
+        .catch(() => {
+          // If network fails, try cache as fallback
+          return caches.match(request).then((response) => {
+            return response || new Response('Offline - Please check your internet connection', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
+            });
+          });
+        })
+    );
+  } else {
+    // For other assets (CSS, JS, images), use cache-first strategy for better performance
+    event.respondWith(
+      caches.match(request)
+        .then((response) => {
+          // Cache hit - return response
+          if (response) {
             return response;
           }
 
-          // Clone the response
-          const responseToCache = response.clone();
+          // Clone the request
+          const fetchRequest = request.clone();
 
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
+          return fetch(fetchRequest).then((response) => {
+            // Check if valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
 
-          return response;
-        });
-      })
-      .catch(() => {
-        // Could return a custom offline page here
-        return new Response('Offline - Please check your internet connection', {
-          status: 503,
-          statusText: 'Service Unavailable',
-          headers: new Headers({
-            'Content-Type': 'text/plain'
-          })
-        });
-      })
-  );
+            // Clone the response
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(request, responseToCache);
+              })
+              .catch((error) => {
+                console.error('Failed to cache response:', error);
+              });
+
+            return response;
+          });
+        })
+        .catch(() => {
+          // Could return a custom offline page here
+          return new Response('Offline - Please check your internet connection', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: new Headers({
+              'Content-Type': 'text/plain'
+            })
+          });
+        })
+    );
+  }
 });

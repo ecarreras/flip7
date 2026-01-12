@@ -25,6 +25,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Update cache version
+        run: |
+          chmod +x update-cache-version.sh
+          ./update-cache-version.sh
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
       
