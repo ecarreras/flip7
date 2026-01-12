@@ -237,9 +237,6 @@ class UIManager {
         this.addPlayerBtn = document.getElementById('addPlayerBtn');
         this.newGameBtn = document.getElementById('newGameBtn');
         this.playersList = document.getElementById('playersList');
-        this.playerSelect = document.getElementById('playerSelect');
-        this.scoreInput = document.getElementById('scoreInput');
-        this.addScoreBtn = document.getElementById('addScoreBtn');
 
         // Scoreboard elements
         this.scoreboard = document.getElementById('scoreboard');
@@ -278,10 +275,6 @@ class UIManager {
             if (e.key === 'Enter') this.addPlayer();
         });
         this.newGameBtn.addEventListener('click', () => this.newGame());
-        this.addScoreBtn.addEventListener('click', () => this.addScore());
-        this.scoreInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.addScore();
-        });
 
         // Calculator
         this.calcButtons.forEach(btn => {
@@ -327,6 +320,7 @@ class UIManager {
             this.playerNameInput.value = '';
             this.updateUI();
             this.showNotification(`${player.name} afegit!`, 'success');
+            this.triggerConfetti();
         }
     }
 
@@ -335,22 +329,6 @@ class UIManager {
             this.gameState.removePlayer(id);
             this.updateUI();
             this.showNotification('Jugador eliminat', 'info');
-        }
-    }
-
-    addScore() {
-        const playerId = parseInt(this.playerSelect.value);
-        const points = parseInt(this.scoreInput.value);
-
-        if (!playerId || isNaN(points)) {
-            this.showNotification('Selecciona un jugador i introdueix punts vàlids', 'error');
-            return;
-        }
-
-        if (this.gameState.addScore(playerId, points)) {
-            this.scoreInput.value = '';
-            this.updateUI();
-            this.showNotification('Punts afegits!', 'success');
         }
     }
 
@@ -364,7 +342,6 @@ class UIManager {
 
     updateUI() {
         this.updatePlayersList();
-        this.updatePlayerSelect();
         this.updateScoreboard();
         this.updateRoundHistory();
     }
@@ -380,23 +357,14 @@ class UIManager {
         this.playersList.innerHTML = players.map(player => `
             <div class="player-item">
                 <div class="player-info">
-                    <div class="player-name">${this.escapeHtml(player.name)}</div>
+                    <div class="player-name">👤 ${this.escapeHtml(player.name)}</div>
                     <div class="player-score">Puntuació: ${player.score}</div>
                 </div>
                 <div class="player-actions">
-                    <button class="btn btn-danger" onclick="app.removePlayer(${player.id})">Eliminar</button>
+                    <button class="btn btn-danger" onclick="app.removePlayer(${player.id})">🗑️ Eliminar</button>
                 </div>
             </div>
         `).join('');
-    }
-
-    updatePlayerSelect() {
-        const players = this.gameState.players;
-        
-        this.playerSelect.innerHTML = '<option value="">Selecciona un jugador</option>' +
-            players.map(player => `
-                <option value="${player.id}">${this.escapeHtml(player.name)}</option>
-            `).join('');
     }
 
     updateScoreboard() {
@@ -470,15 +438,56 @@ class UIManager {
     useCalcResult() {
         const result = this.calculator.getResult();
         if (result !== this.calculator.ERROR_VALUE && result !== '0') {
-            this.scoreInput.value = Math.round(parseFloat(result));
-            this.switchTab('game');
-            this.showNotification('Resultat copiat al camp de punts', 'success');
+            // Switch to wizard tab and transfer the calculator result
+            this.switchTab('wizard');
+            
+            // Initialize wizard if needed, then transfer result
+            if (this.scoreWizard && this.scoreWizard.calculator) {
+                // Clear and set the new value
+                this.scoreWizard.calculator.clear();
+                // Set the result by manipulating through proper flow
+                if (result !== '0') {
+                    this.scoreWizard.calculator.appendNumber(result);
+                }
+                this.updateWizardUI();
+            }
+            
+            this.showNotification('Resultat transferit a l\'assistent!', 'success');
         }
     }
 
     showNotification(message, type) {
-        // Simple notification system - could be enhanced with a toast component
-        console.log(`[${type.toUpperCase()}] ${message}`);
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = `notification-toast ${type}`;
+        
+        const icon = type === 'success' ? '✅' : 
+                     type === 'error' ? '❌' : 
+                     type === 'warning' ? '⚠️' : 'ℹ️';
+        
+        toast.innerHTML = `
+            <span class="icon">${icon}</span>
+            <span class="message">${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Remove toast after 3 seconds
+        setTimeout(() => {
+            toast.classList.add('hiding');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+        
+        // Add success animation to relevant elements
+        if (type === 'success') {
+            const lastItem = document.querySelector('.player-item:last-child, .round-item:first-child');
+            if (lastItem) {
+                lastItem.classList.add('success-feedback');
+                setTimeout(() => lastItem.classList.remove('success-feedback'), 600);
+            }
+        }
     }
 
     // Wizard methods
@@ -603,12 +612,69 @@ class UIManager {
         this.updateWizardUI();
         
         this.showNotification(`Ronda completada! ${appliedCount} puntuacions afegides`, 'success');
+        this.triggerConfetti();
+    }
+
+    // Confetti effect
+    triggerConfetti() {
+        const colors = ['#667eea', '#764ba2', '#f093fb', '#10b981', '#f59e0b'];
+        const confettiCount = 30;
+        
+        for (let i = 0; i < confettiCount; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    document.body.removeChild(confetti);
+                }, 3500);
+            }, i * 50);
+        }
     }
 
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+}
+
+// Dark Mode Toggle
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('.theme-icon');
+    const themeText = themeToggle.querySelector('.theme-text');
+    const htmlElement = document.documentElement;
+    
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('flip7_theme') || 'light';
+    htmlElement.setAttribute('data-theme', savedTheme);
+    updateThemeToggle(savedTheme);
+    
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('flip7_theme', newTheme);
+        updateThemeToggle(newTheme);
+    });
+    
+    function updateThemeToggle(theme) {
+        if (theme === 'dark') {
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Mode clar';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1e293b');
+        } else {
+            themeIcon.textContent = '🌙';
+            themeText.textContent = 'Mode fosc';
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#667eea');
+        }
     }
 }
 
@@ -639,4 +705,5 @@ let app;
 document.addEventListener('DOMContentLoaded', () => {
     const gameState = new GameState();
     app = new UIManager(gameState);
+    initThemeToggle();
 });
