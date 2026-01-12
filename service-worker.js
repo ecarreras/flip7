@@ -62,6 +62,8 @@ self.addEventListener('fetch', (event) => {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(request, responseToCache);
+          }).catch((error) => {
+            console.error('Failed to cache response:', error);
           });
           return response;
         })
@@ -103,6 +105,9 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME)
               .then((cache) => {
                 cache.put(request, responseToCache);
+              })
+              .catch((error) => {
+                console.error('Failed to cache response:', error);
               });
 
             return response;
